@@ -48,6 +48,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         rb.velocity = new Vector3(dir.x * speed, rb.velocity.y, dir.y * speed);
+        CheckIfCanShoot();
     }
     void Shoot()
     {
@@ -55,6 +56,7 @@ public class Movement : MonoBehaviour
         {
             canShoot = false;
             Instantiate(bulletPrefab, firePoint.position, transform.rotation);
+            
         }
     }
     void CheckIfCanShoot()
@@ -69,13 +71,29 @@ public class Movement : MonoBehaviour
             }
         }
     }
-    public void TakeDamage()
+    public void TakeDamagePlayer()
     {
         hp--;
-        if (hp < 0)
+        lifesTxt.text = "Vidas: " + hp.ToString();
+        if (hp <= 0)
         {
-            SceneManager.LoadScene("Game");
-            //Destroy(gameObject);
+            SceneManager.LoadScene("Restart");
+        }
+    }
+
+    public void AddPoints()
+    {
+        points++;
+        pointsTxt.text = "Puntos: " + points.ToString();
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamagePlayer();
+            Destroy item = gameObject.GetComponent<Destroy>();
+            item.Destroyer();
         }
     }
     /* void Jump()

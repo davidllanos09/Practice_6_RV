@@ -7,11 +7,11 @@ public class Spawner : MonoBehaviour
     public List<GameObject> obstacles = new List<GameObject>();
     public List<Transform> positions = new List<Transform>();
     public float timer = 0;
-    public float timeBtwSpawn = 2;
+    public float timeBtwSpawn = 5;
     // Start is called before the first frame update
     void Start()
     {
-        timeBtwSpawn = Random.Range(2f, 5f);
+       // timeBtwSpawn = Random.Range(2f, 5f);
     }
 
     // Update is called once per frame

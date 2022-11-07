@@ -5,7 +5,7 @@ using UnityEngine;
 public class BulletSc : MonoBehaviour
 {
     public float speed = 7;
-    public Vector2 dir = new Vector2(0, 1);
+    public Vector3 dir = new Vector3(0, 1);
     public Rigidbody rb;
     public float timeToDestroy = 3;
     public bool isPlayerBullet = true;
@@ -18,21 +18,19 @@ public class BulletSc : MonoBehaviour
 
     void Update()
     {
-
+        transform.Translate(Vector3.forward * Time.deltaTime * speed, Space.World);
     }
-    void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.CompareTag("Enemy") && isPlayerBullet)
-        {
+        {           
             Enemy e = collision.gameObject.GetComponent<Enemy>();
             e.TakeDamage();
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.CompareTag("Player") && !isPlayerBullet)
-        {
-            Movement p = collision.gameObject.GetComponent<Movement>();
-            p.TakeDamage();
-            Destroy(gameObject);
+            Movement m = collision.gameObject.GetComponent<Movement>();
+            m.AddPoints();
+            Destroy item = collision.gameObject.GetComponent<Destroy>();
+            item.Destroyer();
+            Destroy(gameObject);           
         }
     }
 }
