@@ -2,10 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    // Start is called before the first frame update
+    NewControls inputs;
+    public Button primaryButton;
+    void Awake()
+    {       
+        inputs.Player.StartOption.performed += ctx => primaryButton.Select();
+    }
+    void OnEnable()
+    {
+        inputs.Enable();
+    }
+    void OnDisable()
+    {
+        inputs.Disable();
+    }
     void Start()
     {
         

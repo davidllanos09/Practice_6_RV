@@ -8,7 +8,6 @@ public class Movement : MonoBehaviour
 {
     public Rigidbody rb;
     public float speed = 7;
-    public float jumpForce = 5;
     NewControls inputs;
     Vector2 dir = Vector2.zero;
     public Text pointsTxt;
@@ -18,8 +17,12 @@ public class Movement : MonoBehaviour
     public GameObject bulletPrefab;
     public Transform firePoint;
     public bool canShoot = true;
+    public bool canShootBigBullet = true;
     public float timer = 0;
     public float timeBtwShoot = 0.5f;
+    public float timerBigBullet = 0;
+    public float timeBtwShootBigBullet = 0.5f;
+    public GameObject bigbulletPrefab;
 
 
     void Awake()
@@ -28,7 +31,7 @@ public class Movement : MonoBehaviour
         inputs.Player.Movement.performed += ctx => dir = ctx.ReadValue<Vector2>();
         inputs.Player.Movement.canceled += ctx => dir = Vector2.zero;
         inputs.Player.Shoot.performed += ctx => Shoot();
-        //inputs.Player.Jump.performed += ctx => Jump();
+        inputs.Player.BigShoot.performed += ctx => MegaShoot();
     }
     void OnEnable()
     {
@@ -44,11 +47,11 @@ public class Movement : MonoBehaviour
         lifesTxt.text = "Vidas: " + hp.ToString();
     }
 
-    // Update is called once per frame
     void Update()
     {
         rb.velocity = new Vector3(dir.x * speed, rb.velocity.y, dir.y * speed);
         CheckIfCanShoot();
+        CheckIfCanShootBigBullet();
     }
     void Shoot()
     {
@@ -59,6 +62,7 @@ public class Movement : MonoBehaviour
             
         }
     }
+
     void CheckIfCanShoot()
     {
         if (!canShoot)
@@ -68,6 +72,29 @@ public class Movement : MonoBehaviour
             {
                 canShoot = true;
                 timer = 0;
+            }
+        }
+    }
+
+    void MegaShoot()
+    {
+        if (canShootBigBullet)
+        {
+            canShootBigBullet = false;
+            Instantiate(bigbulletPrefab, firePoint.position, transform.rotation);
+
+        }
+    }
+
+    void CheckIfCanShootBigBullet()
+    {
+        if (!canShootBigBullet)
+        {
+            timerBigBullet += Time.deltaTime;
+            if (timerBigBullet > timeBtwShootBigBullet)
+            {
+                canShootBigBullet = true;
+                timerBigBullet = 0;
             }
         }
     }

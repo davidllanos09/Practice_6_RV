@@ -44,6 +44,24 @@ public partial class @NewControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BigShoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""808bff67-3e94-4e27-b56d-07424e0365fc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""StartOption"",
+                    ""type"": ""Button"",
+                    ""id"": ""b8be537d-23a3-40e0-b5a6-ce74f2967de7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -51,6 +69,17 @@ public partial class @NewControls : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""b65dbebe-4252-4c47-92f6-9a4adf4a975e"",
                     ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c6d5423c-b7ba-4c0f-a2a4-ab50e9dd4d39"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -112,6 +141,50 @@ public partial class @NewControls : IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5f16c95b-1619-4dd8-ac38-07ce0ef6c06c"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6dc1d139-652a-4806-9c9b-0fc5369c636d"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BigShoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""77ee711b-a379-495b-8500-f49e090a9a73"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BigShoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e19efea3-aa1d-47db-9f8a-50391b11ec0c"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartOption"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -122,6 +195,8 @@ public partial class @NewControls : IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
+        m_Player_BigShoot = m_Player.FindAction("BigShoot", throwIfNotFound: true);
+        m_Player_StartOption = m_Player.FindAction("StartOption", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -183,12 +258,16 @@ public partial class @NewControls : IInputActionCollection2, IDisposable
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Shoot;
+    private readonly InputAction m_Player_BigShoot;
+    private readonly InputAction m_Player_StartOption;
     public struct PlayerActions
     {
         private @NewControls m_Wrapper;
         public PlayerActions(@NewControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
+        public InputAction @BigShoot => m_Wrapper.m_Player_BigShoot;
+        public InputAction @StartOption => m_Wrapper.m_Player_StartOption;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -204,6 +283,12 @@ public partial class @NewControls : IInputActionCollection2, IDisposable
                 @Shoot.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShoot;
                 @Shoot.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShoot;
                 @Shoot.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShoot;
+                @BigShoot.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBigShoot;
+                @BigShoot.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBigShoot;
+                @BigShoot.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBigShoot;
+                @StartOption.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStartOption;
+                @StartOption.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStartOption;
+                @StartOption.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStartOption;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -214,6 +299,12 @@ public partial class @NewControls : IInputActionCollection2, IDisposable
                 @Shoot.started += instance.OnShoot;
                 @Shoot.performed += instance.OnShoot;
                 @Shoot.canceled += instance.OnShoot;
+                @BigShoot.started += instance.OnBigShoot;
+                @BigShoot.performed += instance.OnBigShoot;
+                @BigShoot.canceled += instance.OnBigShoot;
+                @StartOption.started += instance.OnStartOption;
+                @StartOption.performed += instance.OnStartOption;
+                @StartOption.canceled += instance.OnStartOption;
             }
         }
     }
@@ -222,5 +313,7 @@ public partial class @NewControls : IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
+        void OnBigShoot(InputAction.CallbackContext context);
+        void OnStartOption(InputAction.CallbackContext context);
     }
 }
